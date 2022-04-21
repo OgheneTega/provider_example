@@ -11,9 +11,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<Counter>(
-          create: (_) => Counter(),
-        ),
+        ChangeNotifierProvider<Counter>(create: (_) => Counter()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -55,8 +53,8 @@ class _MyHomePageState extends State<MyHomePage> {
               'You have pushed the button this many times:',
             ),
             Consumer<Counter>(
-              builder: (_, counter, __) => Text(
-                '${counter.value}',
+              builder: (_, pv, child) => Text(
+                '${pv.value}',
                 style: Theme.of(context).textTheme.headline4,
               ),
             ),
