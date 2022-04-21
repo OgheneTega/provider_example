@@ -2,36 +2,45 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_example/counter.dart';
 import 'package:provider_example/flavor.dart';
+import 'package:provider_example/page_2.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: ChangeNotifierProvider<ValueNotifier<int>>(
-        // lazy: false,
-        create: (BuildContext context) => ValueNotifier<int>(0),
-        child: const MyHomePage(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<Counter>(
+          create: (_) => Counter(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: const MyHomePage(),
       ),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   const MyHomePage({
     Key? key,
   }) : super(key: key);
 
   @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  @override
   Widget build(BuildContext context) {
     final flavor = Provider.of<Flavor>(context);
-    final counter = Provider.of<ValueNotifier<int>>(context);
+    final counter = Provider.of<Counter>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -45,17 +54,24 @@ class MyHomePage extends StatelessWidget {
             const Text(
               'You have pushed the button this many times:',
             ),
-            Consumer<ValueNotifier<int>>(
+            Consumer<Counter>(
               builder: (_, counter, __) => Text(
                 '${counter.value}',
                 style: Theme.of(context).textTheme.headline4,
               ),
             ),
+            const SizedBox(height: 20),
+            TextButton(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const Page2Screen()),
+              ),
+              child: const Text("Next Page"),
+            ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => counter.value++,
+        onPressed: () => counter.increment(),
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
